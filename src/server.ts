@@ -1,7 +1,7 @@
-import express from "express";
-import { router } from "./routes";
+import express from 'express';
+import { router } from './routes';
 
-const PORT = process.env.PORT
+const { PORT } = process.env;
 
 const app = express();
 

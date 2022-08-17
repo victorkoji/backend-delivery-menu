@@ -1,21 +1,20 @@
 import { Request, Response } from 'express';
-import * as bcrypt from 'bcrypt';
 import { prismaClient } from '../../database/prismaClient';
 
-export class CreateUserController {
+export class UpdateUserController {
   static async handle(req: Request, res: Response) {
     const {
-      email, name, password, cpf,
+      id, name, dt_birthday, cpf,
     } = req.body;
 
-    const newPassword = await bcrypt.hash(password, 10).then((hash) => hash);
-
     try {
-      const user = await prismaClient.user.create({
+      const user = await prismaClient.user.update({
+        where: {
+          id,
+        },
         data: {
           name,
-          email,
-          password: newPassword,
+          dt_birthday,
           cpf,
         },
       });

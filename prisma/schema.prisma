@@ -20,10 +20,11 @@ model Address {
   user_updated    User @relation(name: "UserUpdated", fields: [user_updated_id], references: [id])
   user_updated_id Int
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  User       User[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
+  User       User[]
   Restaurant Restaurant[]
 
   @@map("address")
@@ -40,8 +41,9 @@ model User {
   address    Address? @relation(fields: [address_id], references: [id])
   address_id Int?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   product_user_created Product[] @relation("UserCreated")
   product_user_updated Product[] @relation("UserUpdated")
@@ -59,16 +61,14 @@ model User {
   product_category_user_modified ProductCategory[] @relation("ProductCategoryUserUpdated")
 
   favorite_restaurant_created FavoriteRestaurant[] @relation("FavoriteRestaurantUserCreated")
-  favorite_restaurant_updated FavoriteRestaurant[] @relation("FavoriteRestaurantUserUpdated")
 
   favorite_product_created FavoriteProduct[] @relation("FavoriteProductUserCreated")
-  favorite_product_updated FavoriteProduct[] @relation("FavoriteProductUserUpdated")
 
   order_created Order[] @relation("FavoriteProductUserCreated")
   order_updated Order[] @relation("FavoriteProductUserUpdated")
 
-  status_created Statu[] @relation("StatusUserCreated")
-  status_updated Statu[] @relation("StatusUserUpdated")
+  status_created StatusOrder[] @relation("StatusOrderUserCreated")
+  status_updated StatusOrder[] @relation("StatusOrderUserUpdated")
 
   @@map("users")
 }
@@ -89,8 +89,9 @@ model Restaurant {
   user_updated    User @relation(name: "UserUpdated", fields: [user_updated_id], references: [id])
   user_updated_id Int
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   product             Product[]
   favorite_restaurant FavoriteRestaurant[]
@@ -103,11 +104,16 @@ model ProductCategory {
   name  String @db.VarChar(255)
   order Int
 
-  user_created    User      @relation(name: "ProductCategoryUserCreated", fields: [user_created_id], references: [id])
+  user_created    User @relation(name: "ProductCategoryUserCreated", fields: [user_created_id], references: [id])
   user_created_id Int
-  user_updated    User      @relation(name: "ProductCategoryUserUpdated", fields: [user_updated_id], references: [id])
+  user_updated    User @relation(name: "ProductCategoryUserUpdated", fields: [user_updated_id], references: [id])
   user_updated_id Int
-  product         Product[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  product Product[]
 
   @@map("product_categories")
 }
@@ -120,21 +126,20 @@ model Product {
   order       Int
   highlight   Boolean
 
-  restaurant             Restaurant         @relation(fields: [restaurant_id], references: [id])
-  restaurant_id          Int
-  restaurant_category    RestaurantCategory @relation(fields: [restaurant_category_id], references: [id])
-  restaurant_category_id Int
+  restaurant          Restaurant      @relation(fields: [restaurant_id], references: [id])
+  restaurant_id       Int
+  product_category    ProductCategory @relation(fields: [product_category_id], references: [id])
+  product_category_id Int
 
   user_created    User @relation(name: "UserCreated", fields: [user_created_id], references: [id])
   user_created_id Int
   user_updated    User @relation(name: "UserUpdated", fields: [user_updated_id], references: [id])
   user_updated_id Int
 
-  product_category    ProductCategory @relation(fields: [product_category_id], references: [id])
-  product_category_id Int
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
-  created_at       DateTime          @default(now())
-  updated_at       DateTime          @updatedAt
   favorite_product FavoriteProduct[]
 
   @@map("products")
@@ -150,10 +155,10 @@ model RestaurantCategory {
   user_updated    User @relation(name: "UserUpdated", fields: [user_updated_id], references: [id])
   user_updated_id Int
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
-  product    Product[]
   restaurant Restaurant[]
 
   @@map("restaurant_categories")
@@ -166,8 +171,10 @@ model FavoriteRestaurant {
 
   user_created    User @relation(name: "FavoriteRestaurantUserCreated", fields: [user_created_id], references: [id])
   user_created_id Int
-  user_updated    User @relation(name: "FavoriteRestaurantUserUpdated", fields: [user_updated_id], references: [id])
-  user_updated_id Int
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   @@map("favorite_restaurants")
 }
@@ -179,38 +186,48 @@ model FavoriteProduct {
 
   user_created    User @relation(name: "FavoriteProductUserCreated", fields: [user_created_id], references: [id])
   user_created_id Int
-  user_updated    User @relation(name: "FavoriteProductUserUpdated", fields: [user_updated_id], references: [id])
-  user_updated_id Int
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   @@map("favorite_products")
 }
 
-model Statu {
+model StatusOrder {
   id   Int    @id @default(autoincrement())
   name String
 
-  user_created    User    @relation(name: "StatusUserCreated", fields: [user_created_id], references: [id])
+  user_created    User @relation(name: "StatusOrderUserCreated", fields: [user_created_id], references: [id])
   user_created_id Int
-  user_updated    User    @relation(name: "StatusUserUpdated", fields: [user_updated_id], references: [id])
+  user_updated    User @relation(name: "StatusOrderUserUpdated", fields: [user_updated_id], references: [id])
   user_updated_id Int
-  Order           Order[]
 
-  @@map("status")
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  Order Order[]
+
+  @@map("status_order")
 }
 
 model Order {
-  id          Int     @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   description String
-  price       Float   @db.Float
-  highlight   Boolean
+  price       Float  @db.Float
 
   user_created    User @relation(name: "FavoriteProductUserCreated", fields: [user_created_id], references: [id])
   user_created_id Int
   user_updated    User @relation(name: "FavoriteProductUserUpdated", fields: [user_updated_id], references: [id])
   user_updated_id Int
 
-  status  Statu @relation(fields: [statuId], references: [id])
-  statuId Int
+  status_order    StatusOrder @relation(fields: [status_order_id], references: [id])
+  status_order_id Int
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   @@map("orders")
 }

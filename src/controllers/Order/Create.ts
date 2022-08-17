@@ -4,32 +4,29 @@ import {
 } from 'express';
 import { prismaClient } from '../../database/prismaClient';
 
-type TCreateRestaurant = {
-  name: string;
+type TCreateOrder = {
   description: string;
-  address_id: number;
-  restaurant_category_id: number;
+  price: number;
+  status_order_id: number;
   user_created_id: number;
   user_updated_id: number;
 };
 
-export class CreateRestaurantController {
+export class CreateOrderController {
   static async handle(req: Request, res: Response) {
     const {
-      name,
       description,
-      address_id,
-      restaurant_category_id,
+      price,
+      status_order_id,
       user_created_id,
       user_updated_id,
-    }: TCreateRestaurant = req.body;
+    }: TCreateOrder = req.body;
 
-    const restaurant = await prismaClient.restaurant.create({
+    const order = await prismaClient.order.create({
       data: {
-        name,
         description,
-        address_id,
-        restaurant_category_id,
+        price,
+        status_order_id,
         user_created_id,
         user_updated_id,
         user_created: {
@@ -37,14 +34,9 @@ export class CreateRestaurantController {
             id: user_created_id,
           },
         },
-        user_updated: {
-          connect: {
-            id: user_updated_id,
-          },
-        },
       },
     });
 
-    return res.json(restaurant);
+    return res.json(order);
   }
 }
